@@ -1,8 +1,7 @@
 const restController = require('../controllers/restController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
-const passport = require('passport')
-module.exports = (app) => {
+module.exports = (app, passport) => {
   // index route
   app.get('/', (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', restController.getRestaurants)
