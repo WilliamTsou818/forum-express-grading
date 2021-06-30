@@ -6,6 +6,7 @@ const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
   },
+
   signUp: (req, res) => {
     const name = req.body.name
     const email = req.body.email
@@ -15,7 +16,7 @@ const userController = {
       return res.redirect('/signup')
     }
     // confirm unique user
-    User.findOne({ where: { email: email } }).then(user => {
+    User.findOne({ where: { email: email } }).then((user) => {
       if (user) {
         req.flash('error_messages', '該信箱已被註冊')
         return res.redirect('/signup')
@@ -24,8 +25,8 @@ const userController = {
 
     return bcrypt
       .genSalt(10)
-      .then(salt => bcrypt.hash(req.body.password, salt))
-      .then(hash =>
+      .then((salt) => bcrypt.hash(req.body.password, salt))
+      .then((hash) =>
         User.create({
           name,
           email,
@@ -33,7 +34,22 @@ const userController = {
         })
       )
       .then(() => res.redirect('/signin'))
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err))
+  },
+
+  signInPage: (req, res) => {
+    return res.render('signin')
+  },
+
+  signIn: (req, res) => {
+    req.flash('success_messages', '已成功登入！')
+    res.redirect('/restaurants')
+  },
+
+  logout: (req, res) => {
+    req.flash('success_messages', '已成功登出！')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
