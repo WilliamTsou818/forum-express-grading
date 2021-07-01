@@ -9,6 +9,24 @@ const adminController = {
   },
   createRestaurant: (req, res) => {
     return res.render('admin/create')
+  },
+  postRestaurant: (req, res) => {
+    if (!req.body.name || !req.body.tel) {
+      req.flash('error_messages', '餐廳名稱與電話為必填資訊')
+      return res.redirect('back')
+    }
+    return Restaurant.create({
+      name: req.body.name,
+      tel: req.body.tel,
+      address: req.body.address,
+      opening_hours: req.body.opening_hours,
+      description: req.body.description
+    })
+      .then(() => {
+        req.flash('success_messages', '已成功創建餐廳資料')
+        res.redirect('/admin/restaurants')
+      })
+      .catch(err => console.error(err))
   }
 }
 
