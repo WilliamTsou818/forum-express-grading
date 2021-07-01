@@ -2,7 +2,7 @@
   <div class="col-md-6 m-auto">
     <div class="card card-body shadow">
       {{#if restaurant}}
-      <form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST"></form>
+      <form action="/admin/restaurants/{{restaurant.id}}?_method=PUT" method="POST">
       {{else}}
       <form action="/admin/restaurants" method="POST">
       {{/if}}
