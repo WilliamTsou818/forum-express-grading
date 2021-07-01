@@ -24,6 +24,8 @@ module.exports = (app, passport) => {
   app.post('/admin/restaurants', authenticatedAdmin, adminController.postRestaurant)
   // admin read route
   app.get('/admin/restaurants/:id', authenticatedAdmin, adminController.getRestaurant)
+  // admin edit route
+  app.get('/admin/restaurants/:id/edit', authenticatedAdmin, adminController.editRestaurant)
   // signup route
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)

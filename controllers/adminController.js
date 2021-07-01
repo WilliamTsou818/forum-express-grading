@@ -33,6 +33,10 @@ const adminController = {
         res.redirect('/admin/restaurants')
       })
       .catch(err => console.error(err))
+  },
+  editRestaurant: (req, res) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => res.render('admin/create', { restaurant: restaurant.toJSON() }))
   }
 }
 
