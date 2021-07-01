@@ -7,6 +7,12 @@ const adminController = {
       .then(restaurants => res.render('admin/restaurants', { restaurants: restaurants }))
       .catch(err => console.error(err))
   },
+  getRestaurant: (req, res) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
+      })
+  },
   createRestaurant: (req, res) => {
     return res.render('admin/create')
   },
