@@ -22,10 +22,13 @@ module.exports = (app, passport) => {
   // admin route
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   app.get('/admin/restaurants', authenticatedAdmin, adminController.getRestaurants)
+  // admin user route
+  app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+  app.put('/admin/users/:id/toggleAdmin', authenticatedAdmin, adminController.toggleAdmin)
   // admin create route
   app.get('/admin/restaurants/create', authenticatedAdmin, adminController.createRestaurant)
   app.post('/admin/restaurants', authenticatedAdmin, upload.single('image'), adminController.postRestaurant)
-  // admin read route
+  // admin detail route
   app.get('/admin/restaurants/:id', authenticatedAdmin, adminController.getRestaurant)
   // admin edit route
   app.get('/admin/restaurants/:id/edit', authenticatedAdmin, adminController.editRestaurant)
