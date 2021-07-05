@@ -1,6 +1,7 @@
 const restController = require('../controllers/restController')
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
+const categoryController = require('../controllers/categoryController')
 const multer = require('multer')
 const helpers = require('../_helpers')
 const upload = multer({ dest: 'temp/' })
@@ -25,15 +26,17 @@ module.exports = (app, passport) => {
   // admin user route
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
   app.put('/admin/users/:id/toggleAdmin', authenticatedAdmin, adminController.toggleAdmin)
-  // admin create route
+  // admin category route
+  app.get('/admin/categories', authenticatedAdmin, categoryController.getCategories)
+  // admin restaurant create route
   app.get('/admin/restaurants/create', authenticatedAdmin, adminController.createRestaurant)
   app.post('/admin/restaurants', authenticatedAdmin, upload.single('image'), adminController.postRestaurant)
-  // admin detail route
+  // admin restaurant detail route
   app.get('/admin/restaurants/:id', authenticatedAdmin, adminController.getRestaurant)
-  // admin edit route
+  // admin restaurant edit route
   app.get('/admin/restaurants/:id/edit', authenticatedAdmin, adminController.editRestaurant)
   app.put('/admin/restaurants/:id', authenticatedAdmin, upload.single('image'), adminController.putRestaurant)
-  // admin delete route
+  // admin restaurant delete route
   app.delete('/admin/restaurants/:id', authenticatedAdmin, adminController.deleteRestaurant)
   // signup route
   app.get('/signup', userController.signUpPage)
