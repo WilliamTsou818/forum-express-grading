@@ -43,7 +43,8 @@ const adminController = {
           address: req.body.address,
           opening_hours: req.body.opening_hours,
           description: req.body.description,
-          image: file ? img.data.link : null
+          image: file ? img.data.link : null,
+          CategoryId: req.body.categoryId
         })
           .then(() => {
             req.flash('success_messages', '已成功創建餐廳資料')
@@ -58,7 +59,8 @@ const adminController = {
         address: req.body.address,
         opening_hours: req.body.opening_hours,
         description: req.body.description,
-        image: null
+        image: null,
+        CategoryId: req.body.categoryId
       })
         .then(() => {
           req.flash('success_messages', '已成功創建餐廳資料')
@@ -98,7 +100,8 @@ const adminController = {
             address: req.body.address,
             opening_hours: req.body.opening_hours,
             description: req.body.description,
-            image: file ? img.data.link : restaurant.image
+            image: file ? img.data.link : restaurant.image,
+            CategoryId: req.body.categoryId
           }).then(() => {
             req.flash('success_messages', '已成功修改餐廳資料')
             res.redirect('/admin/restaurants')
@@ -113,7 +116,8 @@ const adminController = {
           address: req.body.address,
           opening_hours: req.body.opening_hours,
           description: req.body.description,
-          image: restaurant.image
+          image: restaurant.image,
+          CategoryId: req.body.categoryId
         })
           .then(() => {
             req.flash('success_messages', '已成功修改餐廳資料')
