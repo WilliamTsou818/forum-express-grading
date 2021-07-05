@@ -18,7 +18,13 @@ const adminController = {
       })
   },
   createRestaurant: (req, res) => {
-    return res.render('admin/create')
+    Category.findAll({
+      raw: true,
+      nest: true
+    })
+      .then(categories => {
+        return res.render('admin/create', { categories: categories })
+      })
   },
   postRestaurant: (req, res) => {
     if (!req.body.name || !req.body.tel) {
@@ -62,8 +68,17 @@ const adminController = {
     }
   },
   editRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id)
-      .then(restaurant => res.render('admin/create', { restaurant: restaurant.toJSON() }))
+    Category.findAll({
+      raw: true,
+      nest: true
+    })
+      .then(categories => {
+        return Restaurant.findByPk(req.params.id)
+          .then(restaurant => res.render('admin/create', {
+            restaurant: restaurant.toJSON(),
+            categories: categories
+          }))
+      })
   },
   putRestaurant: (req, res) => {
     if (!req.body.name || !req.body.tel) {
