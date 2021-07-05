@@ -6,7 +6,17 @@ const categoryController = {
       raw: true,
       nest: true
     }).then(categories => {
-      return res.render('admin/categories', { categories: categories })
+      if (req.params.id) {
+        Category.findByPk(req.params.id)
+          .then(category => {
+            return res.render('admin/categories', {
+              categories: categories,
+              category: category.toJSON()
+            })
+          })
+      } else {
+        return res.render('admin/categories', { categories: categories })
+      }
     })
   },
   postCategory: (req, res) => {
@@ -26,6 +36,19 @@ const categoryController = {
           .then(() => {
             req.flash('success_messages', '類別建立成功')
             return res.redirect('/admin/categories')
+          })
+      })
+  },
+  putCategory: (req, res) => {
+    if (!req.body.name) {
+      req.flash('error_messages', '請輸入有效內容')
+      return res.redirect('back')
+    }
+    return Category.findByPk(req.params.id)
+      .then((category) => {
+        category.update(req.body)
+          .then(() => {
+            res.redirect('/admin/categories')
           })
       })
   }
