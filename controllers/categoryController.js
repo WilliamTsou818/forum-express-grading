@@ -45,11 +45,18 @@ const categoryController = {
       return res.redirect('back')
     }
     return Category.findByPk(req.params.id)
-      .then((category) => {
+      .then(category => {
         category.update(req.body)
           .then(() => {
             res.redirect('/admin/categories')
           })
+      })
+  },
+  deleteCategory: (req, res) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        category.destroy()
+          .then(() => res.redirect('/admin/categories'))
       })
   }
 }
