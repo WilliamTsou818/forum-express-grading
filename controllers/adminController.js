@@ -12,7 +12,7 @@ const adminController = {
       .catch(err => console.error(err))
   },
   getRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id)
+    return Restaurant.findByPk(req.params.id, { include: [Category] })
       .then(restaurant => {
         res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
       })
