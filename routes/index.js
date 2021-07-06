@@ -4,6 +4,7 @@ const userController = require('../controllers/userController')
 const categoryController = require('../controllers/categoryController')
 const multer = require('multer')
 const helpers = require('../_helpers')
+const { authenticate } = require('passport')
 const upload = multer({ dest: 'temp/' })
 module.exports = (app, passport) => {
   const authenticated = (req, res, next) => {
@@ -20,6 +21,7 @@ module.exports = (app, passport) => {
   // index route
   app.get('/', authenticated, (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', authenticated, restController.getRestaurants)
+  app.get('/restaurants/:id', authenticated, restController.getRestaurant)
   // admin route
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   app.get('/admin/restaurants', authenticatedAdmin, adminController.getRestaurants)
