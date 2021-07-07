@@ -22,6 +22,7 @@ module.exports = (app, passport) => {
   // index route
   app.get('/', authenticated, (req, res) => res.redirect('/restaurants'))
   app.get('/restaurants', authenticated, restController.getRestaurants)
+  app.get('/restaurants/feeds', authenticated, restController.getFeeds)
   app.get('/restaurants/:id', authenticated, restController.getRestaurant)
   // comment route
   app.post('/comments', authenticated, commentController.postComment)
