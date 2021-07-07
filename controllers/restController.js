@@ -40,7 +40,8 @@ const restController = {
         const restaurantData = result.rows.map(r => ({
           ...r,
           description: r.description.substring(0, 50),
-          categoryName: r.Category.name
+          categoryName: r.Category.name,
+          isFavorited: helpers.getUser(req).FavoritedRestaurants.map(d => d.id).includes(r.id)
         }))
         Category.findAll({ raw: true, nest: true }).then(categories => {
           return res.render('restaurants', {
@@ -58,12 +59,17 @@ const restController = {
   getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, {
       include: [Category,
+        { model: User, as: 'FavoritedUsers' },
         { model: Comment, include: [User] }
       ]
     })
       .then(restaurant => {
         restaurant.increment('viewCounts', { by: 1 })
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req).id)
+        res.render('restaurant', {
+          restaurant: restaurant.toJSON(),
+          isFavorited
+        })
       })
   },
   getFeeds: (req, res) => {
@@ -113,7 +119,10 @@ const restController = {
       UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
     })
-      .then(() => res.redirect('back'))
+      .then(() => {
+        req.flash('success_messages', '已成功加入最愛清單')
+        return res.redirect('back')
+      })
   },
   removeFavorite: (req, res) => {
     return Favorite.findOne({
@@ -123,10 +132,6 @@ const restController = {
       }
     })
       .then(favorite => {
-        if (!favorite) {
-          req.flash('error_messages', '該餐廳並不在最愛清單中')
-          return res.redirect('back')
-        }
         favorite.destroy()
           .then(() => {
             req.flash('success_messages', '已成功從最愛清單中移除')
