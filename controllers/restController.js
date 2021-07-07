@@ -82,8 +82,26 @@ const restController = {
     ])
       .then(([restaurants, comments]) => {
         return res.render('feeds', {
-          restaurants: restaurants,
-          comments: comments
+          restaurants,
+          comments
+        })
+      })
+  },
+  getDashboard: (req, res) => {
+    return Promise.all([
+      Restaurant.findByPk(req.params.id, {
+        include: [Category]
+      }),
+      Comment.findAndCountAll({
+        raw: true,
+        nest: true,
+        where: { restaurantId: req.params.id }
+      })
+    ])
+      .then(([restaurant, comments]) => {
+        return res.render('dashboard', {
+          restaurant: restaurant.toJSON(),
+          commentCount: comments.count
         })
       })
   }
