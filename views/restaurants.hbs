@@ -27,7 +27,7 @@
       <a href="/restaurants/{{this.id}}">
         <img class="card-img-top" src="{{this.image}}" alt="Card image cap" width="286px" height="180px">
       </a>
-      <div class="card-body" style="height: 10rem;">
+      <div class="card-body" style="height: 12rem;">
         <p class="card-text">
           <a href="/restaurants/{{this.id}}">
             {{this.name}}
@@ -35,6 +35,11 @@
         </p>
         <span class="badge badge-secondary">{{this.categoryName}}</span>
         <p class="card-text">{{this.description}}</p>
+        <div class="d-flex justify-content-around">
+          <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+              class="btn btn-danger">移除最愛</button></form>
+          <form action="/favorite/{{this.id}}" method="POST"><button type="submit" class="btn btn-primary">加到最愛</button></form>
+        </div>
       </div>
     </div>
   </div>
