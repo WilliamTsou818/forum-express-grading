@@ -31,6 +31,9 @@ module.exports = (app, passport) => {
   // favorite route
   app.post('/favorite/:restaurantId', authenticated, restController.addFavorite)
   app.delete('/favorite/:restaurantId', authenticated, restController.removeFavorite)
+  // like route
+  app.post('/like/:restaurantId', authenticated, userController.addLike)
+  app.delete('/like/:restaurantId', authenticated, userController.removeLike)
   // admin route
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))
   app.get('/admin/restaurants', authenticatedAdmin, adminController.getRestaurants)
