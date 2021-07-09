@@ -29,8 +29,8 @@ module.exports = (app, passport) => {
   app.post('/comments', authenticated, commentController.postComment)
   app.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
   // favorite route
-  app.post('/favorite/:restaurantId', authenticated, restController.addFavorite)
-  app.delete('/favorite/:restaurantId', authenticated, restController.removeFavorite)
+  app.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+  app.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
   // like route
   app.post('/like/:restaurantId', authenticated, userController.addLike)
   app.delete('/like/:restaurantId', authenticated, userController.removeLike)

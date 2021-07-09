@@ -3,7 +3,6 @@ const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
 const User = db.User
-const Favorite = db.Favorite
 
 const pageLimit = 10
 const helpers = require('../_helpers')
@@ -116,31 +115,6 @@ const restController = {
           restaurant: restaurant.toJSON(),
           commentCount: comments.count
         })
-      })
-  },
-  addFavorite: (req, res) => {
-    return Favorite.create({
-      UserId: helpers.getUser(req).id,
-      RestaurantId: req.params.restaurantId
-    })
-      .then(() => {
-        req.flash('success_messages', '已成功加入最愛清單')
-        return res.redirect('back')
-      })
-  },
-  removeFavorite: (req, res) => {
-    return Favorite.findOne({
-      where: {
-        UserId: helpers.getUser(req).id,
-        RestaurantId: req.params.restaurantId
-      }
-    })
-      .then(favorite => {
-        favorite.destroy()
-          .then(() => {
-            req.flash('success_messages', '已成功從最愛清單中移除')
-            return res.redirect('back')
-          })
       })
   }
 }

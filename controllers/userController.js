@@ -3,6 +3,7 @@ const db = require('../models')
 const User = db.User
 const Comment = db.Comment
 const Restaurant = db.Restaurant
+const Favorite = db.Favorite
 const Like = db.Like
 const Followship = db.Followship
 
@@ -185,6 +186,31 @@ const userController = {
       .then(followship => {
         followship.destroy()
           .then((followship) => {
+            return res.redirect('back')
+          })
+      })
+  },
+  addFavorite: (req, res) => {
+    return Favorite.create({
+      UserId: helpers.getUser(req).id,
+      RestaurantId: req.params.restaurantId
+    })
+      .then(() => {
+        req.flash('success_messages', '已成功加入最愛清單')
+        return res.redirect('back')
+      })
+  },
+  removeFavorite: (req, res) => {
+    return Favorite.findOne({
+      where: {
+        UserId: helpers.getUser(req).id,
+        RestaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        favorite.destroy()
+          .then(() => {
+            req.flash('success_messages', '已成功從最愛清單中移除')
             return res.redirect('back')
           })
       })
