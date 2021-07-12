@@ -62,8 +62,22 @@ const userController = {
   },
   getUser: (req, res) => {
     const userId = req.params.id
-    User.findByPk(userId)
-      .then(user => {
+    const isSelf = helpers.getUser(req).id === Number(userId)
+    User.findByPk(userId, {
+      include: [
+        { model: User, as: 'Followers', attributes: ['image', 'id'] },
+        { model: User, as: 'Followings', attributes: ['image', 'id'] },
+        { model: Restaurant, as: 'FavoritedRestaurants' }
+      ]
+    })
+      .then(currentUser => {
+        currentUser = currentUser.toJSON()
+        const followingCounts = currentUser.Followings.length
+        const followerCounts = currentUser.Followers.length
+        const favRestaurantCounts = currentUser.FavoritedRestaurants.length
+        const isFollowed = currentUser.Followers.map((d) => d.id).includes(
+          helpers.getUser(req).id
+        )
         Comment.findAndCountAll({
           raw: true,
           nest: true,
@@ -76,8 +90,17 @@ const userController = {
               restaurantId: comment.Restaurant.id,
               restaurantImage: comment.Restaurant.image
             }))
-            const count = results.count
-            return res.render('profile', { user: user.toJSON(), count, comments: commentData })
+            const commentCounts = results.count
+            return res.render('profile', {
+              currentUser,
+              commentCounts,
+              comments: commentData,
+              followingCounts,
+              followerCounts,
+              favRestaurantCounts,
+              isSelf,
+              isFollowed
+            })
           })
       })
   },
