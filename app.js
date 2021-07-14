@@ -3,7 +3,6 @@ const exphbs = require('express-handlebars')
 const db = require('./models')
 const session = require('express-session')
 const flash = require('connect-flash')
-const passport = require('./config/passport')
 const methodOverride = require('method-override')
 const path = require('path')
 const app = express()
@@ -12,6 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
+const passport = require('./config/passport')
 const port = process.env.PORT || 3000
 
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs', helpers: require('./config/handlebars-helpers') }))
