@@ -48,6 +48,15 @@ const categoryService = {
             callback({ status: 'success', message: '類別修改成功' })
           })
       })
+  },
+  deleteCategory: (req, res, callback) => {
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        category.destroy()
+          .then(() => {
+            callback({ status: 'success', message: '刪除類別成功' })
+          })
+      })
   }
 }
 
