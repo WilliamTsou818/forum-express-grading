@@ -33,6 +33,25 @@ const userController = {
         }
       })
     })
+  },
+  signUp: (req, res) => {
+    if (req.body.passwordCheck !== req.body.password) {
+      return res.json({ status: 'error', message: '確認密碼不相符！' })
+    } else {
+      User.findOne({ where: { email: req.body.email } }).then(user => {
+        if (user) {
+          return res.json({ status: 'error', message: '該信箱已註冊！' })
+        } else {
+          User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
+          }).then(() => {
+            return res.json({ status: 'success', message: '成功註冊帳號！' })
+          })
+        }
+      })
+    }
   }
 }
 
