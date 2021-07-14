@@ -5,6 +5,7 @@ const upload = multer({ dest: 'temp/' })
 
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
+const categoryService = require('../services/categoryService.js')
 
 // admin restaurants
 router.get('/admin/restaurants', adminController.getRestaurants)
@@ -15,5 +16,6 @@ router.delete('/admin/restaurants/:id', adminController.deleteRestaurant)
 
 // admin categories
 router.get('/admin/categories', categoryController.getCategories)
+router.post('/admin/categories', categoryController.postCategory)
 
 module.exports = router

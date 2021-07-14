@@ -19,6 +19,23 @@ const categoryService = {
         callback({ categories: categories })
       }
     })
+  },
+  postCategory: (req, res, callback) => {
+    if (!req.body.name) {
+      return callback({ status: 'error', message: '請輸入有效內容' })
+    }
+    return Category.findOne({ where: { name: req.body.name } })
+      .then(category => {
+        if (category) {
+          callback({ status: 'error', message: '該分類已存在' })
+        }
+        Category.create({
+          name: req.body.name
+        })
+          .then(() => {
+            callback({ status: 'success', message: '類別建立成功' })
+          })
+      })
   }
 }
 
