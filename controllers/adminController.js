@@ -50,49 +50,14 @@ const adminController = {
       })
   },
   putRestaurant: (req, res) => {
-    if (!req.body.name || !req.body.tel) {
-      req.flash('error_messages', '餐廳名稱與電話為必填資訊')
-      return res.redirect('back')
-    }
-
-    const { file } = req
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID)
-      imgur.upload(file.path, (err, img) => {
-        if (err) console.log(`Error: ${err}`)
-        return Restaurant.findByPk(req.params.id).then(restaurant => {
-          restaurant.update({
-            name: req.body.name,
-            tel: req.body.tel,
-            address: req.body.address,
-            opening_hours: req.body.opening_hours,
-            description: req.body.description,
-            image: file ? img.data.link : restaurant.image,
-            CategoryId: req.body.categoryId
-          }).then(() => {
-            req.flash('success_messages', '已成功修改餐廳資料')
-            res.redirect('/admin/restaurants')
-          })
-        })
-      })
-    } else {
-      return Restaurant.findByPk(req.params.id).then(restaurant => {
-        restaurant.update({
-          name: req.body.name,
-          tel: req.body.tel,
-          address: req.body.address,
-          opening_hours: req.body.opening_hours,
-          description: req.body.description,
-          image: restaurant.image,
-          CategoryId: req.body.categoryId
-        })
-          .then(() => {
-            req.flash('success_messages', '已成功修改餐廳資料')
-            res.redirect('/admin/restaurants')
-          })
-          .catch(err => console.error(err))
-      })
-    }
+    adminService.putRestaurant(req, res, (data) => {
+      if (data.status === 'error') {
+        req.flash('error_messages', data.message)
+        return res.redirect('back')
+      }
+      req.flash('success_messages', data.message)
+      return res.redirect('/admin/restaurants')
+    })
   },
   deleteRestaurant: (req, res) => {
     adminService.deleteRestaurant(req, res, (data) => {
