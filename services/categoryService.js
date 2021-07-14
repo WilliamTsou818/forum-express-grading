@@ -36,6 +36,18 @@ const categoryService = {
             callback({ status: 'success', message: '類別建立成功' })
           })
       })
+  },
+  putCategory: (req, res, callback) => {
+    if (!req.body.name) {
+      return callback({ status: 'error', message: '請輸入有效內容' })
+    }
+    return Category.findByPk(req.params.id)
+      .then(category => {
+        category.update(req.body)
+          .then(() => {
+            callback({ status: 'success', message: '類別修改成功' })
+          })
+      })
   }
 }
 
