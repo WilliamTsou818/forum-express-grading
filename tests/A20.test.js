@@ -50,7 +50,7 @@ describe('# A20: 餐廳資訊整理：Dashboard', function() {
       this.getUser.restore();
       await db.User.destroy({where: {},truncate: true})
       await db.Category.destroy({where: {},truncate: true})
-      await db.Restaurant.destroy({where: {},truncate: true})
+      await db.Restaurant.destroy({where: {},truncate: true })
     })
 
   })

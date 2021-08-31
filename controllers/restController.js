@@ -60,6 +60,7 @@ const restController = {
       ]
     })
       .then(restaurant => {
+        restaurant.increment('viewCounts', { by: 1 })
         res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
   },
@@ -92,16 +93,14 @@ const restController = {
       Restaurant.findByPk(req.params.id, {
         include: [Category]
       }),
-      Comment.findAndCountAll({
-        raw: true,
-        nest: true,
+      Comment.count({
         where: { restaurantId: req.params.id }
       })
     ])
-      .then(([restaurant, comments]) => {
+      .then(([restaurant, commentCounts]) => {
         return res.render('dashboard', {
           restaurant: restaurant.toJSON(),
-          commentCount: comments.count
+          commentCounts
         })
       })
   }
