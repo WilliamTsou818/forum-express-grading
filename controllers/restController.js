@@ -107,12 +107,16 @@ const restController = {
       }),
       Comment.count({
         where: { restaurantId: req.params.id }
+      }),
+      Favorite.count({
+        where: { restaurantId: req.params.id }
       })
     ])
-      .then(([restaurant, commentCounts]) => {
+      .then(([restaurant, commentCounts, favoriteCounts]) => {
         return res.render('dashboard', {
           restaurant: restaurant.toJSON(),
-          commentCounts
+          commentCounts,
+          favoriteCounts
         })
       })
   },
