@@ -62,24 +62,95 @@ const userController = {
   },
   getUser: (req, res) => {
     const userId = req.params.id
-    User.findByPk(userId)
-      .then(user => {
-        Comment.findAndCountAll({
-          raw: true,
-          nest: true,
-          include: [Restaurant],
-          where: { userId: userId }
-        })
-          .then(results => {
-            const commentData = results.rows.map(comment => ({
-              ...comment,
-              restaurantId: comment.Restaurant.id,
-              restaurantImage: comment.Restaurant.image
-            }))
-            const count = results.count
-            return res.render('profile', { user: user.toJSON(), count, comments: commentData })
-          })
+    const isSelf = helpers.getUser(req).id === Number(userId)
+    return Promise.all([
+      User.findByPk(userId, {
+        include: [
+          { model: User, as: 'Followers', attributes: ['image', 'id'] },
+          { model: User, as: 'Followings', attributes: ['image', 'id'] },
+          { model: Restaurant, as: 'FavoritedRestaurants', attributes: ['image', 'id'] }
+        ]
+      }),
+      Comment.findAndCountAll({
+        raw: true,
+        nest: true,
+        include: [{ model: Restaurant, attributes: ['image', 'id'] }],
+        where: { userId: userId }
       })
+    ])
+      .then(([currentUser, comments]) => {
+        currentUser = currentUser.toJSON()
+
+        // count followings, followers, and favorite restaurants
+        const followingCounts = currentUser.Followings.length
+        const followerCounts = currentUser.Followers.length
+        const favRestaurantCounts = currentUser.FavoritedRestaurants.length
+        const isFollowed = currentUser.Followers.map((d) => d.id).includes(
+          helpers.getUser(req).id
+        )
+
+        // handle comments data
+        const commentCounts = comments.count
+        comments = comments.rows.map(comment => ({
+          ...comment,
+          restaurantId: comment.Restaurant.id,
+          restaurantImage: comment.Restaurant.image
+        }))
+
+        return res.render('profile', {
+          currentUser,
+          commentCounts,
+          comments,
+          followingCounts,
+          followerCounts,
+          favRestaurantCounts,
+          isSelf,
+          isFollowed
+        })
+      })
+    // User.findByPk(userId, {
+    //   include: [
+    //     { model: User, as: 'Followers', attributes: ['image', 'id'] },
+    //     { model: User, as: 'Followings', attributes: ['image', 'id'] },
+    //     { model: Restaurant, as: 'FavoritedRestaurants', attributes: ['image', 'id'] }
+    //   ]
+    // })
+    //   .then(currentUser => {
+    //     currentUser = currentUser.toJSON()
+
+    //     // count followings, followers, and favorite restaurants
+    //     const followingCounts = currentUser.Followings.length
+    //     const followerCounts = currentUser.Followers.length
+    //     const favRestaurantCounts = currentUser.FavoritedRestaurants.length
+    //     const isFollowed = currentUser.Followers.map((d) => d.id).includes(
+    //       helpers.getUser(req).id
+    //     )
+
+    //     Comment.findAndCountAll({
+    //       raw: true,
+    //       nest: true,
+    //       include: [Restaurant],
+    //       where: { userId: userId }
+    //     })
+    //       .then(results => {
+    //         const commentData = results.rows.map(comment => ({
+    //           ...comment,
+    //           restaurantId: comment.Restaurant.id,
+    //           restaurantImage: comment.Restaurant.image
+    //         }))
+    //         const commentCounts = results.count
+    //         return res.render('profile', {
+    //           currentUser,
+    //           commentCounts,
+    //           comments: commentData,
+    //           followingCounts,
+    //           followerCounts,
+    //           favRestaurantCounts,
+    //           isSelf,
+    //           isFollowed
+    //         })
+    //       })
+    //   })
   },
   editUser: (req, res) => {
     if (String(helpers.getUser(req).id) !== String(req.params.id)) {
