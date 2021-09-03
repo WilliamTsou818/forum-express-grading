@@ -90,12 +90,16 @@ const userController = {
         )
 
         // handle comments data
-        const commentCounts = comments.count
         comments = comments.rows.map(comment => ({
-          ...comment,
           restaurantId: comment.Restaurant.id,
           restaurantImage: comment.Restaurant.image
         }))
+
+        const restaurantSet = new Set()
+        comments = comments.filter(comment => {
+          return restaurantSet.has(comment.restaurantId) ? false : restaurantSet.add(comment.restaurantId)
+        })
+        const commentCounts = comments.length
 
         return res.render('profile', {
           currentUser,
@@ -108,49 +112,6 @@ const userController = {
           isFollowed
         })
       })
-    // User.findByPk(userId, {
-    //   include: [
-    //     { model: User, as: 'Followers', attributes: ['image', 'id'] },
-    //     { model: User, as: 'Followings', attributes: ['image', 'id'] },
-    //     { model: Restaurant, as: 'FavoritedRestaurants', attributes: ['image', 'id'] }
-    //   ]
-    // })
-    //   .then(currentUser => {
-    //     currentUser = currentUser.toJSON()
-
-    //     // count followings, followers, and favorite restaurants
-    //     const followingCounts = currentUser.Followings.length
-    //     const followerCounts = currentUser.Followers.length
-    //     const favRestaurantCounts = currentUser.FavoritedRestaurants.length
-    //     const isFollowed = currentUser.Followers.map((d) => d.id).includes(
-    //       helpers.getUser(req).id
-    //     )
-
-    //     Comment.findAndCountAll({
-    //       raw: true,
-    //       nest: true,
-    //       include: [Restaurant],
-    //       where: { userId: userId }
-    //     })
-    //       .then(results => {
-    //         const commentData = results.rows.map(comment => ({
-    //           ...comment,
-    //           restaurantId: comment.Restaurant.id,
-    //           restaurantImage: comment.Restaurant.image
-    //         }))
-    //         const commentCounts = results.count
-    //         return res.render('profile', {
-    //           currentUser,
-    //           commentCounts,
-    //           comments: commentData,
-    //           followingCounts,
-    //           followerCounts,
-    //           favRestaurantCounts,
-    //           isSelf,
-    //           isFollowed
-    //         })
-    //       })
-    //   })
   },
   editUser: (req, res) => {
     if (String(helpers.getUser(req).id) !== String(req.params.id)) {
