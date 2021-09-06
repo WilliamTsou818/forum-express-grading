@@ -104,24 +104,25 @@ const adminService = {
     }
   },
   getUsers: async (req, res, callback) => {
-    return User.findAll({ raw: true, nest: true })
-      .then(users => {
-        const data = { users: users }
-        callback(data)
-      })
+    const users = await User.findAll({ raw: true, nest: true })
+    const data = { users: users }
+    return callback(data)
   },
-  toggleAdmin: (req, res, callback) => {
+  toggleAdmin: async (req, res, callback) => {
     const id = req.params.id
-    return User.findByPk(id).then(user => {
-      if (user.email === 'root@example.com') {
-        callback({ status: 'error', message: '核心管理者的權限不可更動！' })
-      }
-      user.isAdmin === false ? user.isAdmin = true : user.isAdmin = false
-      return user.update({ isAdmin: user.isAdmin })
-        .then(() => {
-          callback({ status: 'success', message: '已修改使用者權限！' })
-        })
-    })
+    const user = await User.findByPk(id)
+
+    // 防止核心管理者的權限遭修改
+    if (user.email === 'root@example.com') {
+      const data = { status: 'error', message: '核心管理者的權限不可更動！' }
+      return callback(data)
+    } else {
+    // 修改權限
+      user.isAdmin = !user.isAdmin
+      await user.update({ isAdmin: user.isAdmin })
+      const data = { status: 'success', message: '已修改使用者權限！' }
+      return callback(data)
+    }
   }
 }
 

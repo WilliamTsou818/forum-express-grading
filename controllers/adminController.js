@@ -1,10 +1,6 @@
 const db = require('../models')
-const Restaurant = db.Restaurant
-const User = db.User
-const Category = db.Category
+const { Restaurant, Category } = db
 const adminService = require('../services/adminService')
-const imgur = require('imgur-node-api')
-const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -68,7 +64,7 @@ const adminController = {
   },
   getUsers: (req, res) => {
     adminService.getUsers(req, res, (data) => {
-      return res.render('/admin/users', data)
+      return res.render('admin/users', data)
     })
   },
   toggleAdmin: (req, res) => {
