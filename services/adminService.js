@@ -1,6 +1,5 @@
 const db = require('../models')
-const Restaurant = db.Restaurant
-const Category = db.Category
+const { User, Category, Restaurant } = db
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
@@ -103,6 +102,26 @@ const adminService = {
           .catch(err => console.error(err))
       })
     }
+  },
+  getUsers: async (req, res, callback) => {
+    return User.findAll({ raw: true, nest: true })
+      .then(users => {
+        const data = { users: users }
+        callback(data)
+      })
+  },
+  toggleAdmin: (req, res, callback) => {
+    const id = req.params.id
+    return User.findByPk(id).then(user => {
+      if (user.email === 'root@example.com') {
+        callback({ status: 'error', message: '核心管理者的權限不可更動！' })
+      }
+      user.isAdmin === false ? user.isAdmin = true : user.isAdmin = false
+      return user.update({ isAdmin: user.isAdmin })
+        .then(() => {
+          callback({ status: 'success', message: '已修改使用者權限！' })
+        })
+    })
   }
 }
 
