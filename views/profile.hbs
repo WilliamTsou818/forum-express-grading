@@ -52,8 +52,8 @@
       <h6 class="card-header"><strong>{{commentCounts}}</strong> 已評論餐廳</h6> 
       <div class="card-body">
         {{#each comments}}
-        <a href="/restaurants/{{this.restaurantId}}" style="display: inline-block;">
-          <img src="{{this.restaurantImage}}" class="img m-2" style="width: 3rem; height: 3rem;">
+        <a href="/restaurants/{{this.Restaurant.id}}" style="display: inline-block;">
+          <img src="{{this.Restaurant.image}}" class="img m-2" style="width: 3rem; height: 3rem;">
         </a>
         {{/each}}
       </div>
