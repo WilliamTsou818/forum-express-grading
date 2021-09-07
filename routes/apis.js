@@ -7,6 +7,7 @@ const passport = require('../config/passport')
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
 const userController = require('../controllers/api/userController')
+const commentController = require('../controllers/api/commentController')
 
 const authenticated = passport.authenticate('jwt', { session: false })
 
@@ -54,5 +55,9 @@ router.delete('/following/:userId', authenticated, userController.removeFollowin
 // user favorite route
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+// comment route
+router.post('/comments', authenticated, commentController.postComment)
+router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
 module.exports = router
