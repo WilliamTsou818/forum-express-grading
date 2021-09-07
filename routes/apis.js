@@ -8,6 +8,7 @@ const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
 const userController = require('../controllers/api/userController')
 const commentController = require('../controllers/api/commentController')
+const restController = require('../controllers/api/restController')
 
 const authenticated = passport.authenticate('jwt', { session: false })
 
@@ -20,20 +21,27 @@ const authenticatedAdmin = (req, res, next) => {
   }
 }
 
-// admin restaurants
+// index restaurants route
+router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+router.get('/restaurants/top', authenticated, restController.getTopRestaurant)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
+// admin restaurants route
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)
 router.get('/admin/restaurants/:id', authenticated, authenticatedAdmin, adminController.getRestaurant)
 router.post('/admin/restaurants', authenticated, authenticatedAdmin, upload.single('image'), adminController.postRestaurant)
 router.put('/admin/restaurants/:id', authenticated, authenticatedAdmin, upload.single('image'), adminController.putRestaurant)
 router.delete('/admin/restaurants/:id', authenticated, authenticatedAdmin, adminController.deleteRestaurant)
 
-// admin categories
+// admin categories route
 router.get('/admin/categories', authenticated, authenticatedAdmin, categoryController.getCategories)
 router.post('/admin/categories', authenticated, authenticatedAdmin, categoryController.postCategory)
 router.put('/admin/categories/:id', authenticated, authenticatedAdmin, categoryController.putCategory)
 router.delete('/admin/categories/:id', authenticated, authenticatedAdmin, categoryController.deleteCategory)
 
-// admin users
+// admin users route
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
 router.put('/admin/users/:id/toggleAdmin', authenticated, authenticatedAdmin, adminController.toggleAdmin)
 
